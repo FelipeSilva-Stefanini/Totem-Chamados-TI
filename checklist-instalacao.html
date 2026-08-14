@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist de Instalação — Central de Chamados TI</title>
+<style>
+  :root {
+    --bg: #EEF0F1;
+    --panel: #FFFFFF;
+    --ink: #1E2328;
+    --ink-muted: #5B6470;
+    --line: #D7DBDE;
+    --brand: #1F3A5F;
+    --caution: #E08E1D;
+    --caution-bg: #FBF0DC;
+    --success: #2F7D4F;
+    --success-bg: #E7F3EC;
+    --danger: #C4402D;
+    --danger-bg: #FAEAE7;
+    --radius: 6px;
+    --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--font-ui); }
+  .top-stripe { height: 6px; background: var(--caution); }
+  .page { max-width: 720px; margin: 0 auto; padding: 32px 20px 64px; }
+
+  header.masthead { margin-bottom: 28px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); margin: 0 0 6px; }
+  h1 { font-size: clamp(22px, 4vw, 28px); font-weight: 700; margin: 0 0 8px; line-height: 1.25; }
+  .subtitle { font-size: 15px; color: var(--ink-muted); margin: 0; max-width: 56ch; }
+
+  .progresso {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 14px 18px; margin: 24px 0 28px; display: flex; align-items: center; gap: 14px;
+  }
+  .progresso-barra { flex: 1; height: 8px; background: var(--bg); border-radius: 999px; overflow: hidden; }
+  .progresso-preenchida { height: 100%; width: 0%; background: var(--brand); transition: width .2s ease; }
+  .progresso-texto { font-family: var(--font-mono); font-size: 13px; color: var(--ink-muted); white-space: nowrap; }
+
+  .passo {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 18px 20px; margin-bottom: 12px; display: flex; gap: 14px;
+  }
+  .passo.feito { border-color: var(--success); background: var(--success-bg); }
+
+  .passo-check { flex-shrink: 0; padding-top: 2px; }
+  .passo-check input { width: 20px; height: 20px; accent-color: var(--brand); cursor: pointer; }
+
+  .passo-corpo { flex: 1; min-width: 0; }
+  .passo-num { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--brand); }
+  .passo-titulo { font-size: 16px; font-weight: 700; margin: 2px 0 6px; }
+  .passo.feito .passo-titulo { text-decoration: line-through; color: var(--ink-muted); }
+  .passo-desc { font-size: 14px; line-height: 1.55; color: var(--ink); margin: 0 0 10px; }
+  .passo.feito .passo-desc { color: var(--ink-muted); }
+
+  code, .caminho {
+    font-family: var(--font-mono); font-size: 13px; background: var(--bg);
+    border: 1px solid var(--line); border-radius: 4px; padding: 2px 7px; word-break: break-all;
+  }
+  .bloco-codigo {
+    display: block; font-family: var(--font-mono); font-size: 13px; background: var(--bg);
+    border: 1px solid var(--line); border-left: 3px solid var(--brand); border-radius: 4px;
+    padding: 10px 14px; margin: 6px 0 0; word-break: break-all;
+  }
+
+  .aviso {
+    display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700;
+    color: #8A5A0B; background: var(--caution-bg); border: 1px solid #EBD3A3;
+    border-radius: 999px; padding: 3px 10px;
+  }
+
+  .secao-titulo { font-size: 13px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-muted); margin: 36px 0 14px; }
+
+  .problemas { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .problema { padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  .problema:last-child { border-bottom: none; }
+  .problema-sintoma { font-size: 14px; font-weight: 700; margin: 0 0 4px; }
+  .problema-solucao { font-size: 14px; color: var(--ink-muted); margin: 0; line-height: 1.5; }
+
+  footer { margin-top: 40px; font-size: 12px; color: var(--ink-muted); text-align: center; }
+
+  @media print {
+    .progresso { position: static; }
+    body { background: #fff; }
+  }
+</style>
+</head>
+<body>
+  <div class="top-stripe"></div>
+  <div class="page">
+    <header class="masthead">
+      <p class="eyebrow">TI · Field Service</p>
+      <h1>Checklist de instalação</h1>
+      <p class="subtitle">Central de Chamados TI — do zero até rodando no tablet. Marque cada passo conforme for concluindo (as marcações não são salvas ao fechar a página, é só um guia de acompanhamento).</p>
+    </header>
+
+    <div class="progresso">
+      <span class="progresso-texto" id="progressoTexto">0/12</span>
+      <div class="progresso-barra"><div class="progresso-preenchida" id="progressoBarra"></div></div>
+    </div>
+
+    <div id="listaPassos">
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 1</div>
+          <div class="passo-titulo">Instalar o XAMPP</div>
+          <p class="passo-desc">Baixe o instalador em <code>apachefriends.org</code> e rode com as opções padrão. Na tela de componentes, deixe marcados <strong>Apache</strong>, <strong>MySQL</strong> e <strong>PHP</strong> (o phpMyAdmin vem junto automaticamente).</p>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 2</div>
+          <div class="passo-titulo">Copiar o projeto para o htdocs</div>
+          <p class="passo-desc">Extraia o zip <code>chamados-ti</code> e copie a pasta inteira para dentro do XAMPP. O caminho final precisa ficar exatamente assim:</p>
+          <code class="bloco-codigo">C:\xampp\htdocs\chamados-ti\index.php</code>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 3</div>
+          <div class="passo-titulo">Ligar Apache e MySQL</div>
+          <p class="passo-desc">Abra o XAMPP Control Panel e clique em <strong>Start</strong> nas linhas Apache e MySQL. As duas devem ficar verdes.</p>
+          <span class="aviso">Apache não sobe? Geralmente é a porta 80 ocupada (Skype ou IIS)</span>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 4</div>
+          <div class="passo-titulo">Importar o schema.sql</div>
+          <p class="passo-desc">Acesse o endereço abaixo, clique em <strong>Importar</strong> no menu superior, escolha o arquivo <code>database/schema.sql</code> dentro da pasta do projeto, e clique em <strong>Executar</strong>.</p>
+          <code class="bloco-codigo">http://localhost/phpmyadmin</code>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 5</div>
+          <div class="passo-titulo">Gerar o hash da sua senha</div>
+          <p class="passo-desc">No navegador, acesse o endereço abaixo trocando <code>SUASENHA</code> pela senha que você quer usar. Copie o texto gerado (começa com <code>$2y$10$</code>).</p>
+          <code class="bloco-codigo">http://localhost/chamados-ti/gerar_senha.php?senha=SUASENHA</code>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 6</div>
+          <div class="passo-titulo">Colar o hash no seu usuário</div>
+          <p class="passo-desc">No phpMyAdmin: <code>chamados_ti</code> → <code>agentes_suporte</code> → Procurar → clique no lápis (Editar) na linha <code>felipe.leite</code> → cole o hash no campo <code>senha_hash</code>, substituindo o texto atual → Executar.</p>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 7</div>
+          <div class="passo-titulo">Testar o seu login</div>
+          <p class="passo-desc">Acesse o endereço abaixo e entre com usuário <code>felipe.leite</code> e a senha escolhida no passo 5. Se cair no dashboard zerado, está tudo certo.</p>
+          <code class="bloco-codigo">http://localhost/chamados-ti/login.php</code>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 8</div>
+          <div class="passo-titulo">Cadastrar os outros 2 agentes</div>
+          <p class="passo-desc">Já logado, vá na aba <strong>Equipe</strong> e cadastre os dois pelo formulário (nome completo, usuário no formato <code>primeiro.ultimo</code>, senha inicial). Combine a senha com cada pessoa antes de salvar.</p>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 9</div>
+          <div class="passo-titulo">Apagar o gerar_senha.php</div>
+          <p class="passo-desc">Delete (ou mova para fora da pasta) o arquivo abaixo. Ele não deve ficar acessível depois de cumprir a função de gerar seu hash inicial.</p>
+          <code class="bloco-codigo">C:\xampp\htdocs\chamados-ti\gerar_senha.php</code>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 10</div>
+          <div class="passo-titulo">Descobrir o IP da VM na rede</div>
+          <p class="passo-desc">No Prompt de Comando da VM, rode o comando abaixo e anote o IPv4 (ex: <code>192.168.1.50</code>). É esse endereço que o tablet vai usar, no lugar de <code>localhost</code>.</p>
+          <code class="bloco-codigo">ipconfig</code>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 11</div>
+          <div class="passo-titulo">Testar no navegador do tablet</div>
+          <p class="passo-desc">No tablet, acesse o endereço abaixo substituindo pelo IP do passo 10. Preencha um chamado de teste e confirme que ele aparece na aba Chamados quando você acessar pelo computador.</p>
+          <code class="bloco-codigo">http://IP-DA-VM/chamados-ti/</code>
+          <span class="aviso">Não conecta? Confira o Firewall do Windows liberando a porta 80 para conexões de entrada</span>
+        </div>
+      </div>
+
+      <div class="passo">
+        <div class="passo-check"><input type="checkbox"></div>
+        <div class="passo-corpo">
+          <div class="passo-num">PASSO 12</div>
+          <div class="passo-titulo">Configurar o modo quiosque no tablet</div>
+          <p class="passo-desc">Instale o app <strong>Fully Kiosk Browser</strong> (gratuito) no Tab A7 Lite, configure a URL inicial como o endereço do passo 11, e ative o modo quiosque para travar a navegação só nessa página.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="secao-titulo">Problemas comuns</p>
+    <div class="problemas">
+      <div class="problema">
+        <p class="problema-sintoma">MySQL não inicia no XAMPP</p>
+        <p class="problema-solucao">Geralmente é outro serviço MySQL já rodando na porta 3306 (ex: instalação antiga). Feche outros serviços de banco de dados na VM ou troque a porta do MySQL na aba Config do XAMPP.</p>
+      </div>
+      <div class="problema">
+        <p class="problema-sintoma">Página em branco ao abrir o sistema</p>
+        <p class="problema-solucao">Normalmente é erro de conexão com o banco. Confira se o MySQL está ligado e se os dados em <code>config.php</code> (host, usuário, senha) batem com o que está configurado no XAMPP.</p>
+      </div>
+      <div class="problema">
+        <p class="problema-sintoma">Tablet não abre o endereço da VM</p>
+        <p class="problema-solucao">Confirme que tablet e VM estão na mesma rede Wi-Fi/cabeada, e libere a porta 80 de entrada no Firewall do Windows (Painel de Controle → Firewall do Windows Defender → Configurações Avançadas → Regra de Entrada).</p>
+      </div>
+      <div class="problema">
+        <p class="problema-sintoma">Erro "Usuário ou senha inválidos" mesmo com a senha certa</p>
+        <p class="problema-solucao">Confira se o hash foi colado por inteiro no phpMyAdmin (sem cortar o começo ou o fim) e se não sobrou nenhum espaço antes ou depois do texto colado.</p>
+      </div>
+    </div>
+
+    <footer>Central de Chamados TI · gerado para instalação em campo</footer>
+  </div>
+
+  <script>
+    var checkboxes = document.querySelectorAll('.passo-check input');
+    var barra = document.getElementById('progressoBarra');
+    var texto = document.getElementById('progressoTexto');
+
+    function atualizar() {
+      var total = checkboxes.length;
+      var feitos = 0;
+      checkboxes.forEach(function (cb) {
+        var passo = cb.closest('.passo');
+        passo.classList.toggle('feito', cb.checked);
+        if (cb.checked) feitos++;
+      });
+      texto.textContent = feitos + '/' + total;
+      barra.style.width = (feitos / total * 100) + '%';
+    }
+
+    checkboxes.forEach(function (cb) { cb.addEventListener('change', atualizar); });
+    atualizar();
+  </script>
+</body>
+</html>
